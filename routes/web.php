@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth','admin'],'prefix' => 'admin','as' => 'admi
     Route::post('users','UserController@store')->name('users.store');
 
     Route::resource('teams','TeamController');
+    Route::resource('projects','ProjectController');
 
 });
 

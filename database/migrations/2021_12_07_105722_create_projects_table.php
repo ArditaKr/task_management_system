@@ -23,6 +23,7 @@ class CreateProjectsTable extends Migration
             $table->unsignedBiginteger('team_id');
             $table->unsignedBiginteger('created_by')->nullable();
             $table->unsignedBiginteger('updated_by')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });

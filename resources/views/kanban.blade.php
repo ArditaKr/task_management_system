@@ -1,174 +1,112 @@
 @extends('layouts.app')
 
 @section('title','Kanban')
-
+@push('css') 
+<link rel="icon" type="image/png" href="{{asset('backend/kanban')}}/favicon.png">
+    <link rel="stylesheet" href="{{asset('backend/kanban')}}/style.css">
+@endpush
 @section('content')
 
-<section class="content pb-3">
-      <div class="container-fluid h-100">
-        <div class="card card-row card-secondary">
-          <div class="card-header">
-            <h3 class="card-title">
-              Backlog
-            </h3>
-          </div>
-          <div class="card-body">
-            <div class="card card-info card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Create Labels</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#3</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
+<h1 class="main-title">Kanban Board</h1>
+    <div class="drag-container">
+        <ul class="drag-list">
+            <!-- Backlog Column -->
+            <li class="drag-column backlog-column">
+                <span class="header">
+                    <h1>Backlog</h1>
+                </span>
+                <!-- Backlog Content -->
+                <div id="backlog-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="backlog-list" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="dragEnter(0)"></ul>
                 </div>
-              </div>
-              <div class="card-body">
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox1" disabled>
-                  <label for="customCheckbox1" class="custom-control-label">Bug</label>
+                <!-- Add Button Group -->
+                <div class="add-btn-group">
+                    <div class="add-btn" onclick="showInputBox(0)">
+                        <span class="plus-sign">+</span>
+                        <span>Add Item</span>
+                    </div>
+                    <div class="add-btn solid" onclick="hideInputBox(0)">
+                        <span>Save Item</span>
+                    </div>
                 </div>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox2" disabled>
-                  <label for="customCheckbox2" class="custom-control-label">Feature</label>
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
                 </div>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox3" disabled>
-                  <label for="customCheckbox3" class="custom-control-label">Enhancement</label>
+            </li>
+            <!-- Progress Column -->
+            <li class="drag-column progress-column">
+                <span class="header">
+                    <h1>In Progress</h1>
+                </span>
+                <!-- Progress Content -->
+                <div id="progress-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="progress-list" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="dragEnter(1)"></ul>
                 </div>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox4" disabled>
-                  <label for="customCheckbox4" class="custom-control-label">Documentation</label>
+                <!-- Add Button Group -->
+                <div class="add-btn-group">
+                    <div class="add-btn" onclick="showInputBox(1)">
+                        <span class="plus-sign">+</span>
+                        <span>Add Item</span>
+                    </div>
+                    <div class="add-btn solid" onclick="hideInputBox(1)">
+                        <span>Save Item</span>
+                    </div>
                 </div>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox5" disabled>
-                  <label for="customCheckbox5" class="custom-control-label">Examples</label>
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
                 </div>
-              </div>
-            </div>
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Create Issue template</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#4</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
+            </li>
+            <!-- Complete Column -->
+            <li class="drag-column complete-column">
+                <span class="header">
+                    <h1>Complete</h1>
+                </span>
+                <!-- Complete Content -->
+                <div id="complete-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="complete-list" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="dragEnter(2)"></ul>
                 </div>
-              </div>
-              <div class="card-body">
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox1_1" disabled>
-                  <label for="customCheckbox1_1" class="custom-control-label">Bug Report</label>
+                <!-- Add Button Group -->
+                <div class="add-btn-group">
+                    <div class="add-btn" onclick="showInputBox(2)">
+                        <span class="plus-sign">+</span>
+                        <span>Add Item</span>
+                    </div>
+                    <div class="add-btn solid" onclick="hideInputBox(2)">
+                        <span>Save Item</span>
+                    </div>
                 </div>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" id="customCheckbox1_2" disabled>
-                  <label for="customCheckbox1_2" class="custom-control-label">Feature Request</label>
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
                 </div>
-              </div>
-            </div>
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Create PR template</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#6</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
+            </li>
+            <!-- On Hold Column -->
+            <li class="drag-column on-hold-column">
+                <span class="header">
+                    <h1>On Hold</h1>
+                </span>
+                <!-- On Hold Content -->
+                <div id="on-hold-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="on-hold-list" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="dragEnter(3)"></ul>
                 </div>
-              </div>
-            </div>
-            <div class="card card-light card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Create Actions</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#7</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
+                <!-- Add Button Group -->
+                <div class="add-btn-group">
+                    <div class="add-btn" onclick="showInputBox(3)">
+                        <span class="plus-sign">+</span>
+                        <span>Add Item</span>
+                    </div>
+                    <div class="add-btn solid" onclick="hideInputBox(3)">
+                        <span>Save Item</span>
+                    </div>
                 </div>
-
-              </div>
-              <div class="card-body">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                  Aenean commodo ligula eget dolor. Aenean massa.
-                  Cum sociis natoque penatibus et magnis dis parturient montes,
-                  nascetur ridiculus mus.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card card-row card-primary">
-          <div class="card-header">
-            <h3 class="card-title">
-              To Do
-            </h3>
-          </div>
-          <div class="card-body">
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Create first milestone</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#5</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card card-row card-default">
-          <div class="card-header bg-info">
-            <h3 class="card-title">
-              In Progress
-            </h3>
-          </div>
-          <div class="card-body">
-            <div class="card card-light card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Update Readme</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#2</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
-                </div>
-              </div>
-              <div class="card-body">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                  Aenean commodo ligula eget dolor. Aenean massa.
-                  Cum sociis natoque penatibus et magnis dis parturient montes,
-                  nascetur ridiculus mus.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card card-row card-success">
-          <div class="card-header">
-            <h3 class="card-title">
-              Done
-            </h3>
-          </div>
-          <div class="card-body">
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title">Create repo</h5>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-link">#1</a>
-                  <a href="#" class="btn btn-tool">
-                    <i class="fas fa-pen"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+            </li>
+        </ul>
+    </div>
 
 @endsection
+
+@push('js') 
+    <script src="{{asset('backend/kanban')}}/script.js"></script>
+@endpush
