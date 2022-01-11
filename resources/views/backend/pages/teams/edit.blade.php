@@ -26,7 +26,7 @@
               </div>
               <div class="form-group">
                 <label for="members">Members</label>
-                <input type="number" name="members" class="form-control" id="members" placeholder="Team Members" value="{{ old('members',$team->members) }}">
+                <input type="number" name="members" class="form-control" id="members" min="1" placeholder="Team Members" value="{{ old('members',$team->members) }}">
                 @error('members')
                   <small class="text-danger">{{ $message }}</small>
                 @enderror

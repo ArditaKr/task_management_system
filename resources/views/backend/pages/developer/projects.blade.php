@@ -3,13 +3,12 @@
 @section('title','Projects')
 
 @section('content')
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title d-inline">Project</h3>
+                    <h3 class="card-title d-inline">{{__('language.project')}}</h3>
                     {{-- <a href="{{ route('team-leader.tasks.create') }}" class="btn btn-success btn-sm
                     float-right">New Task</a> --}}
                 </div>

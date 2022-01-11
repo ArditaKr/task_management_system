@@ -13,7 +13,7 @@
           <img src="{{ asset('backend') }}/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ Auth::user()->name }} ({{ Auth::user()->role->name }})</a>
+          <a href="{{ route('profile.show',Auth::id()) }}" class="d-block">{{ Auth::user()->name }} ({{ Auth::user()->role->name }})</a>
         </div>
       </div>
 
@@ -81,7 +81,7 @@
             <a href="{{ route('developer.projects.list') }}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Projects 
+               {{ __('language.project') }} 
               </p>
             </a>
           </li>

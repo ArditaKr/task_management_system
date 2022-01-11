@@ -24,6 +24,7 @@
                                 <th>Project</th>
                                 <th>Status</th>
                                 <th>Start Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,7 +36,9 @@
                                 <td>{{ $task->project->name }}</td>
                                 <td>{{ $task->status }}</td>
                                 <td>{{ date('F d Y',strtotime($task->start_date)) }}</td>
-                                
+                                <td>
+                                    <a href="{{route('developer.tasks.details',$task->id)}}" class="btn btn-success btn-sm">Details</a>
+                                </td>
                             </tr>
                             @empty
                             <tr>

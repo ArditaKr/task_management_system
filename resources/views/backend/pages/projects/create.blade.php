@@ -18,7 +18,7 @@
               @csrf 
               <div class="form-group">
                 <label for="name">Project Title</label>
-                <input type="text" name="name" class="form-control" id="name" placeholder="Team Name" value="{{ old('name') }}">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Project Name" value="{{ old('name') }}">
                 @error('name')
                   <small class="text-danger">{{ $message }}</small>
                 @enderror

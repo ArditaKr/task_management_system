@@ -6,6 +6,8 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Mail\TaskAssignedEmail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -60,6 +62,7 @@ class TaskController extends Controller
         }
         $task = Task::create([
             'title' => $request->title,
+            'description' => $request->description,
             'image' => $image_name,
             'level' => $request->level,
             'status' => $request->status,
@@ -71,7 +74,9 @@ class TaskController extends Controller
         ]);
         // return $request->all();
         // $task = Task::create($request->all());
+        $userEmail = DB::table('users')->where('id', $request->assign_to)->value('email');
         if($task){
+            \Mail::to($userEmail)->send(new TaskAssignedEmail());
             return redirect()->route('team-leader.tasks.index')->with('success','Task created successfully');
         }else{
             return redirect()->back()->with('error','Something went wrong. Please try again later');
@@ -132,6 +137,7 @@ class TaskController extends Controller
         }
         $update = $task->update([
             'title' => $request->title,
+            'description' => $request->description,
             'image' => $image_name,
             'level' => $request->level,
             'status' => $request->status,

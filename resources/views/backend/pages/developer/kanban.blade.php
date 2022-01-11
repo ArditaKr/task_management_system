@@ -105,11 +105,10 @@
                 </div>
             </div>
         </div>
-
 {{-- modal start here --}}
 <div class="modal fade" id="task-modal">
     <div class="modal-dialog">
-      <div class="modal-content bg-success">
+      <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">{{ $project->name }}</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">

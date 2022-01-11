@@ -9,7 +9,8 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title d-inline">Projects</h3>
+            <h3 class="card-title d-inline">{{ __('language.project') }}</h3>
+            <p>{{ __('language.project') }}</p>
             <a href="{{ route('team-leader.projects.create') }}" class="btn btn-success btn-sm float-right">New Project</a>
           </div>
           <!-- /.card-header -->

@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamController;
@@ -27,6 +29,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// Route::get('lang/{locale}', [App\Http\Controllers\HomeController::class, 'language']);
+Route::get('lang/{locale}',function($locale){
+    App::setLocale($locale);
+    session()->put('locale', $locale);
+    // return App::currentLocale();
+    return redirect()->back();
+});
 Route::group(['middleware' => 'auth'],function(){
     Route::group(['middleware' => 'admin','prefix' => 'admin','as' => 'admin.'],function(){
         Route::resource('roles',RoleController::class);
@@ -47,11 +56,13 @@ Route::group(['middleware' => 'auth'],function(){
         Route::get('projects/details/{id}',[DeveloperController::class,'projectDetails'])->name('project.details');
         Route::post('task/create',[DeveloperController::class,'taskCreate'])->name('tasks.create');
         Route::post('task/delete',[DeveloperController::class,'taskDelete'])->name('task.delete');
-        Route::get('weather',[DeveloperController::class,'weather']);
+        Route::get('tasks_details/{id}',[DeveloperController::class,'taskDetails'])->name('tasks.details');
     });
 
 
 });
 
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('profile/{id}',[HomeController::class,'profile'])->name('profile.show');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::post('profile/update/{id}',[HomeController::class,'updateProfile'])->name('profile.update');
+Route::post('check_old_password',[HomeController::class,'checkOldPassword'])->name('check_old_password');
