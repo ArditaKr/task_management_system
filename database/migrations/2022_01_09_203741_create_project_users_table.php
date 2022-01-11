@@ -1,12 +1,12 @@
 <?php
 
-use App\Team;
 use App\User;
+use App\Project;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProjectsTable extends Migration
+class CreateProjectUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,20 +15,18 @@ class CreateProjectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('project_users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->integer('members')->default(0);
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->unsignedBiginteger('team_id');
-            $table->unsignedBiginteger('created_by')->nullable();
-            $table->unsignedBiginteger('updated_by')->nullable();
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();
+            $table->timestamps();
 
-            $table->foreign('team_id')->references('id')->on((new Team)->getTable())->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('project_id')->references('id')->on((new Project)->getTable())->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on((new User)->getTable())->onDelete('set null')->onUpdate('cascade');
             $table->foreign('created_by')->references('id')->on((new User)->getTable())->onDelete('set null')->onUpdate('cascade');
             $table->foreign('updated_by')->references('id')->on((new User)->getTable())->onDelete('set null')->onUpdate('cascade');
         });
@@ -41,6 +39,6 @@ class CreateProjectsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('project_users');
     }
 }
