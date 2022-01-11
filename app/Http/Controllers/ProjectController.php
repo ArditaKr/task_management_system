@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Team;
-use App\Project;
+use App\Models\Team;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
-
-    public function __construct(){
-        $this->middleware(['auth']);
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,8 +16,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
-        return view('projects.index',compact('projects'));
+        $projects = Project::where('team_id',Auth::user()->team_id)->get();
+        return view('backend.pages.projects.index',compact('projects'));
     }
 
     /**
@@ -30,8 +27,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $teams = Team::all();
-        return view('projects.create',compact('teams'));
+        $teams = Team::where('id',Auth::user()->team_id)->get();
+        return view('backend.pages.projects.create',compact('teams'));
     }
 
     /**
@@ -43,22 +40,19 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|max:100|min:5|unique:projects',
+            'status' => 'required',
             'members' => 'required',
-            'team_id' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required'
+            'team_id' => 'required'
         ]);
-        $project = Project::create([
-            'name' => $request->name,
-            'members' => $request->members,
-            'team_id' => $request->team_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'status' => 'active'
-        ]);
-        return redirect()->route('team_leader.projects.index');
-        return $request;
+        $request->merge(['created_by' => Auth::id()]);
+        // return $request;
+        $project = Project::create($request->all());
+        if($project){
+            return redirect()->route('team-leader.projects.index')->with('success','Project created successfully');
+        }else{
+            return redirect()->back()->with('error','Something went wrong. Please try again later');
+        }
     }
 
     /**
@@ -82,7 +76,7 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         $teams = Team::all();
-        return view('projects.edit',compact('project','teams'));
+        return view('backend.pages.projects.edit',compact('project','teams'));
     }
 
     /**
@@ -94,23 +88,20 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'members' => 'required',
-            'team_id' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required'
-        ]);
         $project = Project::findOrFail($id);
-        $project->update([
-            'name' => $request->name,
-            'members' => $request->members,
-            'team_id' => $request->team_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'status' => 'active'
+        $request->validate([
+            'name' => 'required|max:100|min:5|unique:projects,name,'.$project->id,
+            'status' => 'required',
+            'members' => 'required',
+            'team_id' => 'required'
         ]);
-        return redirect()->route('team_leader.projects.index');
+        $request->merge(['updated_by' => Auth::id()]);
+        $update = $project->update($request->all());
+        if($update){
+            return redirect()->route('team-leader.projects.index')->with('success','Project updated successfully');
+        }else{
+            return redirect()->back()->with('error','Something went wrong. Please try again later');
+        }
     }
 
     /**
@@ -121,10 +112,12 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
-
-    public function kanban(){
-        return view('kanban');
+        $project = Project::findOrFail($id);
+        $delete = $project->delete();
+        if($delete){
+            return redirect()->route('team-leader.projects.index')->with('success','Project deleted successfully');
+        }else{
+            return redirect()->back()->with('error','Something went wrong. Please try again later');
+        }
     }
 }

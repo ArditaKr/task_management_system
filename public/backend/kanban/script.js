@@ -24,17 +24,44 @@ let draggedItem;
 let dragging = false;
 let currentColumn;
 
+const task_data = new Promise((resolve,reject) => {
+  $.ajax({
+    type : "get",
+    url : "/developer/get_task_data",
+    success : function(data){
+      resolve(data);
+    }
+  });
+
+});
+
 // Get Arrays from localStorage if available, set default values if not
-function getSavedColumns() {
+async function getSavedColumns() {
+  
   if (localStorage.getItem('backlogItems')) {
     backlogListArray = JSON.parse(localStorage.backlogItems);
     progressListArray = JSON.parse(localStorage.progressItems);
     completeListArray = JSON.parse(localStorage.completeItems);
     onHoldListArray = JSON.parse(localStorage.onHoldItems);
   } else {
-    backlogListArray = ['Release the course', 'Sit back and relax'];
-    progressListArray = ['Work on projects', 'Listen to music'];
-    completeListArray = ['Being cool', 'Getting stuff done'];
+    let task_datas = await task_data;
+    $(task_datas).each((index,value)=>{
+      if(value.status == 'to-do'){
+        alert(value.status);
+        backlogListArray.push(value.title);
+      }else if(value.status == 'in-progress'){
+        alert(value.status);
+        progressListArray.push(value.title);
+      }else if(value.status == 'done'){
+        alert(value.status);
+        completeListArray.push(value.title);
+      }
+    });
+     
+        console.log(backlogListArray);
+        console.log(progressListArray);
+        console.log(completeListArray);
+    
     onHoldListArray = ['Being uncool'];
   }
 }

@@ -2,48 +2,128 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\User;
-use App\Team;
-use App\TeamUser;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index(){
-        $users = User::where('type','!=','admin')->get();
-        return view('users.index',compact('users'));
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $users = User::where('role_id','!=',1)->get();
+        return view('backend.pages.users.index',compact('users'));
     }
 
-    public function create(){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
         $teams = Team::all();
-        return view('users.create',compact('teams'));
+        $roles = Role::where('id','!=',1)->get();
+        return view('backend.pages.users.create',compact('teams','roles'));
     }
 
-    public function store(Request $request){
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|max:100|min:5',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|max:11',
-            'type' => 'required'
+            'password' => 'required|max:12|min:6',
+            'gender' => 'required',
+            'team_id' => 'required',
+            'role_id' => 'required'
         ]);
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'type' => $request->type,
-            'password' => bcrypt($request->password),
-        ]);
-        if($request->team_id){
-            $team_user = TeamUser::create([
-                'user_id' => $user->id,
-                'team_id' => $request->team_id
-            ]);
+        $request->merge(['password' => bcrypt($request->password),'created_by' => Auth::id()]);
+        $user = User::create($request->all());
+        if($user){
+            return redirect()->route('admin.users.index')->with('success','User created successfully');
+        }else{
+            return redirect()->back()->with('error','Something went wrong. Please try again later');
         }
-        return redirect()->route('admin.users.index');
     }
 
-    public function edit($id){
-        $user = User::findOrFail($id);
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
         $teams = Team::all();
-        return view('users.edit',compact('user','teams'));
+        $roles = Role::where('id','!=',1)->get();
+        $user = User::findOrFail($id);
+        return view('backend.pages.users.edit',compact('teams','roles','user'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $request->validate([
+            'name' => 'required|min:5|max:100',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'gender' => 'required',
+            'team_id' => 'required',
+            'role_id' => 'required' 
+        ]);
+        if($request->password){
+            $request->merge(['password' => bcrypt($request->password)]);
+        }else{
+            $request->merge(['password' => $user->password]);
+        }
+        $request->merge(['updated_by' => Auth::id()]);
+        $update = $user->update($request->all());
+        if($update){
+            if($update){
+                return redirect()->route('admin.users.index')->with('success','User updated successfully');
+            }else{
+                return redirect()->back()->with('error','Something went wrong. Please try again later');
+            }
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }
