@@ -110,4 +110,9 @@ class HomeController extends Controller
             return false;
         }
     }
+
+    public function usermanual()
+    {
+        return view('backend.pages.usermanual');
+    }
 }

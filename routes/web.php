@@ -64,5 +64,6 @@ Route::group(['middleware' => 'auth'],function(){
 
 Route::get('profile/{id}',[HomeController::class,'profile'])->name('profile.show');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/usermanual', [HomeController::class, 'usermanual'])->name('usermanual');
 Route::post('profile/update/{id}',[HomeController::class,'updateProfile'])->name('profile.update');
 Route::post('check_old_password',[HomeController::class,'checkOldPassword'])->name('check_old_password');

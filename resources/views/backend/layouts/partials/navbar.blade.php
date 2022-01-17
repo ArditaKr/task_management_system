@@ -12,9 +12,14 @@
         <div class="dropdown-menu" aria-labelledby="dropdown09">
             <a class="dropdown-item" href="{{ url('lang/al') }}"><span class="flag-icon flag-icon-al"> </span>  Albania</a>
             <a class="dropdown-item" href="{{ url('lang/en') }}"><span class="flag-icon flag-icon-us"> </span>  English</a>
-        </div>
+        
     </li>
-   
+    <div class="col-md-12 mb-4">
+    <a href="{{ route('usermanual') }}" class="nav-link">
+    <button type="button" class="btn btn-elegant"><i class="far fa-user pr-2" aria-hidden="true"></i>User Manual</button>
+    </div>
+
+</div>
     </ul>
     </ul>
   </nav>
